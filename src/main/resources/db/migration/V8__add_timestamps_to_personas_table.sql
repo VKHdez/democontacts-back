@@ -1,0 +1,3 @@
+ALTER TABLE dbo.personas
+ADD created_at DATETIME2 NOT NULL CONSTRAINT DF_personas_created_at DEFAULT SYSUTCDATETIME(),
+    updated_at DATETIME2 NOT NULL CONSTRAINT DF_personas_updated_at DEFAULT SYSUTCDATETIME();

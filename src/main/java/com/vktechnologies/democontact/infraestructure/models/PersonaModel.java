@@ -1,6 +1,10 @@
 package com.vktechnologies.democontact.infraestructure.models;
 
+import java.time.Instant;
 import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +41,14 @@ public class PersonaModel {
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
 
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private Instant createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at", nullable = false)
+	private Instant updatedAt;
+
 	// Setters & Getters
 
 	public Long getId() { return id; }
@@ -55,4 +67,7 @@ public class PersonaModel {
 
 	public LocalDate getBirthDate() { return birthDate; }
 	public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+
+	public Instant getCreatedAt() { return createdAt; }
+	public Instant getUpdatedAt() { return updatedAt; }
 }

@@ -38,13 +38,13 @@ public class UserService {
 		UserModel userModel = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException( userId ) );
 		
-		if( !dto.username().isEmpty() )
+		if( dto.username() != null && !dto.username().isEmpty() )
 			userModel.setUsername(dto.username());
 		
-		if( !dto.email().isEmpty() )
+		if( dto.email() != null && !dto.email().isEmpty() )
 			userModel.setEmail(dto.email());
 		
-		if( !dto.password().isEmpty() )
+		if( dto.password() != null && !dto.password().isEmpty() )
 			userModel.setPassword(passwordEncoder.encode(dto.password()));
 		
 		return userRepository.save(userModel);

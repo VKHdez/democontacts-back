@@ -1,5 +1,11 @@
 package com.vktechnologies.democontact.infraestructure.models;
 
+import java.time.Instant;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,29 +18,38 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@SoftDelete
 public class UserModel {
-	
+
 	// Attributes
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(nullable = false, length = 50)
 	private String username;
-	
+
 	@Column(nullable = false, length = 255)
 	private String email;
-	
+
 	@Column(nullable = false, length = 255)
 	private String password;
-	
+
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private Instant createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at", nullable = false)
+	private Instant updatedAt;
+
 	// Relations
-	
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "persona_id", nullable = false, unique = true)
 	private PersonaModel persona;
-	
+
 	// Setters & Getters
 
 	public Long getId() { return id; }
@@ -50,4 +65,7 @@ public class UserModel {
 
 	public PersonaModel getPersona() { return persona; }
 	public void setPersona(PersonaModel persona) { this.persona = persona; }
+
+	public Instant getCreatedAt() { return createdAt; }
+	public Instant getUpdatedAt() { return updatedAt; }
 }
