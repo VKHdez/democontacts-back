@@ -1,0 +1,79 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Logs ###
+*.log
+logs/
+
+### Sensitive configuration ###
+.env
+.env.*
+application-*.yml
+application-*.yaml
+application-*.properties
+secrets.yml
+secrets.yaml
+credentials.json
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.jks
+*.pfx
+*.secret
+*.token
+*_keys
+*_secrets
+*_tokens
+id_rsa
+id_dsa
+
+### Runtime diagnostics ###
+*.hprof
+.attach_pid*
+
+### AI assistant configuration ###
+CLAUDE.md
+.claude/
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+GEMINI.md
+.codex/

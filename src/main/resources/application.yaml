@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: democontact
+  datasource:
+    url: jdbc:sqlserver://${DB_HOST}:${DB_PORT};database=${DB_NAME};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      dialect: org.hibernate.dialect.SQLServerDialect
+    show-sql: false
+
+  flyway:
+    enable: true
+    locations: classpath:db/migration
