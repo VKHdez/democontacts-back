@@ -1,4 +1,4 @@
-package com.vktechnologies.democontact.domain.persona.service;
+package com.vktechnologies.democontact.application.persona.service;
 
 import org.springframework.stereotype.Service;
 

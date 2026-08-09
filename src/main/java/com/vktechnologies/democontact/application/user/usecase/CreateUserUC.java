@@ -1,10 +1,10 @@
-package com.vktechnologies.democontact.domain.user.usecase;
+package com.vktechnologies.democontact.application.user.usecase;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.vktechnologies.democontact.domain.persona.service.PersonaService;
-import com.vktechnologies.democontact.domain.user.service.UserService;
+import com.vktechnologies.democontact.application.persona.service.PersonaService;
+import com.vktechnologies.democontact.application.user.service.UserService;
 import com.vktechnologies.democontact.infraestructure.dto.CreateUserDTO;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
 import com.vktechnologies.democontact.infraestructure.models.UserModel;
@@ -25,7 +25,6 @@ public class CreateUserUC {
 	public UserModel execute(CreateUserDTO dto)
 	{
 		PersonaModel persona = personaService.create(dto.persona());
-
 		return userService.create(dto, persona);
 	}
 }
