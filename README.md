@@ -19,11 +19,7 @@ The purpose of this project is to onboard into **Spring Boot** by mapping concep
 
 ## Stack
 
-- **Language/runtime:** Java 21
-- **Framework:** Spring Boot — Spring Web MVC, Spring Data JPA, Spring Validation
-- **Database:** SQL Server (JDBC via `mssql-jdbc`)
-- **Migrations:** Flyway
-- **Build tool:** Maven (via the Maven Wrapper)
+Java 21 + Spring Boot on SQL Server — full breakdown in [docs/architecture/index.md](docs/architecture/index.md).
 
 ## Architecture
 
@@ -42,7 +38,7 @@ Full details in [docs/architecture/index.md](docs/architecture/index.md).
 ### Prerequisites
 
 - JDK 21
-- A Relational Database (i.e. MariaDB/Mysql, SQL Server, etc...)
+- A Relational Database (i.e. MariaDB/Mysql, SQL Server, etc...) — just use the correct driver, in this project SQL Server was used
 
 ### Database
 

@@ -20,7 +20,7 @@ Fields:
 - `name` (mandatory)
 - `first name` (mandatory)
 - `last name` (mandatory)
-- `gender` (mandatory)
+- `gender` (mandatory) — selected from a fixed catalog, not free text (see `genders` in `docs/architecture/db.md`)
 - `birth date` (optional)
 
 Rules:
