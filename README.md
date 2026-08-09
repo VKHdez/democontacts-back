@@ -11,10 +11,10 @@ The purpose of this project is to onboard into **Spring Boot** by mapping concep
 | Eloquent Model / ActiveRecord | JPA Entity (`infraestructure.models`, `@Entity`) |
 | Migrations (`php artisan migrate`) | Flyway migrations (`src/main/resources/db/migration`) |
 | Repository/Service classes (manual) | `JpaRepository` (free CRUD) + `@Service` classes (`domain.*.service`) |
-| FormRequest validation | Request DTOs with Bean Validation (`@Valid`, `@NotBlank`, `@Pattern`, ...) |
+| FormRequest validation (& DTOs) | Request DTOs with Bean Validation (`@Valid`, `@NotBlank`, `@Pattern`, ...) |
 | Service Container / DI | Spring `ApplicationContext` — beans (`@Component`, `@Service`, `@Repository`, `@RestController`) injected via constructor |
 | Route + Controller | `@RestController` + `@GetMapping`/`@PostMapping` |
-| `.env` | Environment variables read in `application.yaml`, plus `application-local.yaml` (gitignored) for local dev |
+| `.env` | Environment variables read in `application.yaml`, plus `application-local.yaml` |
 | `artisan` commands | Maven Wrapper commands (`mvnw.cmd` / `mvnw`) |
 
 ## Stack
@@ -32,8 +32,8 @@ Layered architecture, with the domain layer following **Clean Architecture** / *
 - `presentation.rest.v{n}.controllers` — REST controllers, request/response mapping, input validation.
 - `domain.{context}.usecase` / `domain.{context}.service` — business logic and orchestration, framework-agnostic where possible.
 - `infraestructure.persistence` — Spring Data JPA repositories.
-- `infraestructure.models` — JPA entities mapped to the database schema.
-- `infraestructure.dto` — request/response DTOs, decoupled from the entities.
+- `infraestructure.models` — JPA entities mapped to the database schema, isolated according to clean principles
+- `infraestructure.dto` — request/response DTOs, decoupled from the entities; Depending on context difficulty, it can exists several ways to achieve correct DTO cases
 
 Full details in [docs/architecture/index.md](docs/architecture/index.md).
 
@@ -42,13 +42,13 @@ Full details in [docs/architecture/index.md](docs/architecture/index.md).
 ### Prerequisites
 
 - JDK 21
-- A reachable SQL Server database — **provisioning and credentials are on you**, this repo does not include or manage a database instance.
+- A Relational Database (i.e. MariaDB/Mysql, SQL Server, etc...)
 
 ### Database
 
-Connection details are read from environment variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) in `src/main/resources/application.yaml` — never hardcode real values there.
+Connection details are read from environment variables (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) in `src/main/resources/application.yaml`
 
-For local development, create `src/main/resources/application-local.yaml` (gitignored) with your real connection details, and activate it with the `local` Spring profile.
+For local development, create `src/main/resources/application-local.yaml` with your real connection details, and activate it with the `local` Spring profile.
 
 Schema changes are managed entirely through Flyway migrations under `src/main/resources/db/migration` — Hibernate never auto-generates or alters the schema (`ddl-auto: validate`).
 
