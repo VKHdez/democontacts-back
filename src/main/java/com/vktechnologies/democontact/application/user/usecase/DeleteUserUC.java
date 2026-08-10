@@ -30,8 +30,10 @@ public class DeleteUserUC {
 	{
 		UserModel user = this.getUser(userId);
 		
-		personaService.disable(user.getPersona().getId());
+		// Disabling the user first
 		userService.disable(userId);
+		// Disabling the persona
+		personaService.disable(user.getPersona().getId());
 	}
 	
 	private UserModel getUser(Long userId)
