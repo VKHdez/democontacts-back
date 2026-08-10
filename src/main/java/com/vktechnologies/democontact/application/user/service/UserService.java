@@ -21,6 +21,12 @@ public class UserService {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
+	
+	public UserModel find(Long userId)
+	{
+		return userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException( userId ) );
+	}
 
 	public UserModel create(CreateUserDTO dto, PersonaModel persona)
 	{
@@ -48,5 +54,13 @@ public class UserService {
 			userModel.setPassword(passwordEncoder.encode(dto.password()));
 		
 		return userRepository.save(userModel);
+	}
+	
+	public void disable(Long userId)
+	{
+		UserModel userModel = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException( userId ) );
+		
+		userRepository.delete(userModel);
 	}
 }

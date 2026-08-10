@@ -1,6 +1,6 @@
 package com.vktechnologies.democontact.infraestructure.models;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SoftDelete;
@@ -38,11 +38,11 @@ public class UserModel {
 
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false, updatable = false)
-	private Instant createdAt;
+	private LocalDateTime createdAt;
 
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
-	private Instant updatedAt;
+	private LocalDateTime updatedAt;
 
 	// Relations
 
@@ -66,6 +66,6 @@ public class UserModel {
 	public PersonaModel getPersona() { return persona; }
 	public void setPersona(PersonaModel persona) { this.persona = persona; }
 
-	public Instant getCreatedAt() { return createdAt; }
-	public Instant getUpdatedAt() { return updatedAt; }
+	public LocalDateTime getCreatedAt() { return createdAt; }
+	public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

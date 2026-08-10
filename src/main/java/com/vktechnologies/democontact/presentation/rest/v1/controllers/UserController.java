@@ -2,6 +2,7 @@ package com.vktechnologies.democontact.presentation.rest.v1.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import com.vktechnologies.democontact.application.user.usecase.CreateUserUC;
+import com.vktechnologies.democontact.application.user.usecase.DeleteUserUC;
 import com.vktechnologies.democontact.application.user.usecase.GetUserUC;
 import com.vktechnologies.democontact.application.user.usecase.UpdateUserUC;
 import com.vktechnologies.democontact.infraestructure.api.ApiResponse;
@@ -29,16 +31,19 @@ public class UserController {
 	private final CreateUserUC createUserUC;
 	private final GetUserUC getUserUC;
 	private final UpdateUserUC updateUserUC;
+	private final DeleteUserUC deleteUserUC;
 
 	public UserController(
 		CreateUserUC createUserUC, 
 		GetUserUC getUserUC,
-		UpdateUserUC updateUserUC
+		UpdateUserUC updateUserUC,
+		DeleteUserUC deleteUserUC
 	)
 	{
 		this.createUserUC = createUserUC;
 		this.getUserUC = getUserUC;
 		this.updateUserUC = updateUserUC;
+		this.deleteUserUC = deleteUserUC;
 	}
 
 	@PostMapping("")
@@ -65,12 +70,16 @@ public class UserController {
 	{
 		UserModel user = updateUserUC.execute(userId, request);
 		return ResponseEntity.status(HttpStatus.resolve(200)).body(
-				new ApiResponse<>(GetUserDTO.from(user), "User retrieved")
+			new ApiResponse<>(GetUserDTO.from(user), "User retrieved")
 		);
 	}
 
-	public String delete()
+	@DeleteMapping("/{userId}")
+	public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long userId)
 	{
-		return null;
+		deleteUserUC.execute(userId);
+		return ResponseEntity.ok().body(
+			new ApiResponse<>(null, "User disabled succesfully")
+		);
 	}
 }

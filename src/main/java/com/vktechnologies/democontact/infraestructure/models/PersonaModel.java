@@ -1,9 +1,10 @@
 package com.vktechnologies.democontact.infraestructure.models;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "personas")
+@SoftDelete
 public class PersonaModel {
 
 	// Attributes
@@ -43,11 +45,11 @@ public class PersonaModel {
 
 	@CreationTimestamp
 	@Column(name = "created_at", nullable = false, updatable = false)
-	private Instant createdAt;
+	private LocalDateTime createdAt;
 
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
-	private Instant updatedAt;
+	private LocalDateTime updatedAt;
 
 	// Setters & Getters
 
@@ -68,6 +70,6 @@ public class PersonaModel {
 	public LocalDate getBirthDate() { return birthDate; }
 	public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
 
-	public Instant getCreatedAt() { return createdAt; }
-	public Instant getUpdatedAt() { return updatedAt; }
+	public LocalDateTime getCreatedAt() { return createdAt; }
+	public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

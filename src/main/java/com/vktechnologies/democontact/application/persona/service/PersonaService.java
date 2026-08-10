@@ -2,6 +2,7 @@ package com.vktechnologies.democontact.application.persona.service;
 
 import org.springframework.stereotype.Service;
 
+import com.vktechnologies.democontact.domain.user.exception.UserNotFoundException;
 import com.vktechnologies.democontact.infraestructure.dto.CreatePersonaDTO;
 import com.vktechnologies.democontact.infraestructure.models.GenderModel;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
@@ -32,5 +33,13 @@ public class PersonaService {
 		persona.setBirthDate(dto.birthDate());
 
 		return personaRepository.save(persona);
+	}
+	
+	public void disable(Long personaId)
+	{
+		PersonaModel personaModel = personaRepository.findById(personaId)
+			.orElseThrow(() -> new UserNotFoundException( personaId ) );
+		
+		personaRepository.delete(personaModel);
 	}
 }
