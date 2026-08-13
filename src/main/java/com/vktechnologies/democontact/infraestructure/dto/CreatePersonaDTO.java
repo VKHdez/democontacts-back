@@ -2,6 +2,8 @@ package com.vktechnologies.democontact.infraestructure.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -28,6 +30,7 @@ public record CreatePersonaDTO(
 	Long genderId,
 
 	@Past
+	@JsonFormat(pattern="yyy-MM-dd")
 	LocalDate birthDate
 ) {
 	// Normaliza antes de validar: recorta espacios en los campos de texto.
