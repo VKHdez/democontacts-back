@@ -52,4 +52,9 @@ public class PersonaController {
 		deletePersonaUC.execute(personaId);
 		return ResponseEntity.ok(new ApiResponse<>(null, "Persona deleted succesfully"));
 	}
+	
+	public void activate()
+	{
+		
+	}
 }

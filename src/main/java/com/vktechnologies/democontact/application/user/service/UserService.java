@@ -1,5 +1,7 @@
 package com.vktechnologies.democontact.application.user.service;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,11 @@ public class UserService {
 	{
 		return userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException( userId ) );
+	}
+	
+	public Optional<UserModel> findByPersona(PersonaModel persona)
+	{
+		return userRepository.findByPersona(persona);
 	}
 
 	public UserModel create(CreateUserDTO dto, PersonaModel persona)

@@ -15,11 +15,15 @@ This first pass covers `users`, `personas`, and the persona-to-persona emergency
 | username | VARCHAR | NOT NULL |
 | email | VARCHAR | NOT NULL, UNIQUE |
 | password | VARCHAR | NOT NULL |
+| created_at | DATETIME2 | NOT NULL, default `SYSUTCDATETIME()` |
+| updated_at | DATETIME2 | NOT NULL, default `SYSUTCDATETIME()` |
+| deleted | BIT | NOT NULL, default `0` |
 
 Rules, and how they're enforced:
 
 - A user can be related to only one persona → `persona_id` has a UNIQUE constraint.
 - The email must be unique → UNIQUE constraint on `email`.
+- Users are soft-deleted, not physically removed → `deleted` flag, toggled instead of a `DELETE`.
 
 ## personas
 
@@ -31,6 +35,9 @@ Rules, and how they're enforced:
 | last_name | VARCHAR | NOT NULL |
 | gender_id | BIGINT | NOT NULL, FK → genders.id |
 | birth_date | DATE | NULL |
+| created_at | DATETIME2 | NOT NULL, default `SYSUTCDATETIME()` |
+| updated_at | DATETIME2 | NOT NULL, default `SYSUTCDATETIME()` |
+| deleted | BIT | NOT NULL, default `0` |
 
 Rules:
 
@@ -38,6 +45,7 @@ Rules:
 - Gender is a fixed catalog, not free text → `gender_id` FK to `genders`, not a VARCHAR column.
 - A persona can have multiple addresses and numbers — not modeled yet in this doc; will be added when the Address/Contact Number tables are documented.
 - A persona can have other, already-registered personas as emergency contacts → modeled below via `persona_emergency_contacts`.
+- Personas are soft-deleted, not physically removed → `deleted` flag, toggled instead of a `DELETE`.
 
 ## genders
 

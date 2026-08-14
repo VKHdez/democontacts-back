@@ -1,13 +1,17 @@
 package com.vktechnologies.democontact.application.persona.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.vktechnologies.democontact.domain.persona.exception.PersonaNotFoundException;
 import com.vktechnologies.democontact.infraestructure.dto.CreatePersonaDTO;
 import com.vktechnologies.democontact.infraestructure.models.GenderModel;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
+import com.vktechnologies.democontact.infraestructure.models.UserModel;
 import com.vktechnologies.democontact.infraestructure.persistence.GenderRepository;
 import com.vktechnologies.democontact.infraestructure.persistence.PersonaRepository;
+import com.vktechnologies.democontact.infraestructure.persistence.UserRepository;
 
 /**
  * @author Ing. Victor Hdez. A <victor.hdezalvarez@gmail.com>
@@ -16,12 +20,18 @@ import com.vktechnologies.democontact.infraestructure.persistence.PersonaReposit
 public class PersonaService {
 
 	private final PersonaRepository personaRepository;
+	private final UserRepository userRepository;
 	private final GenderRepository genderRepository;
 
-	public PersonaService(PersonaRepository personaRepository, GenderRepository genderRepository)
+	public PersonaService(
+		PersonaRepository personaRepository, 
+		UserRepository userRepository,
+		GenderRepository genderRepository
+	)
 	{
 		this.personaRepository = personaRepository;
 		this.genderRepository = genderRepository;
+		this.userRepository = userRepository;
 	}
 	
 	public PersonaModel findPersona(Long personaId)
@@ -72,7 +82,7 @@ public class PersonaService {
 	{
 		PersonaModel personaModel = personaRepository.findById(personaId)
 			.orElseThrow(() -> new PersonaNotFoundException( personaId ) );
-		
+	
 		personaRepository.delete(personaModel);
 	}
 }

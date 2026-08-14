@@ -2,6 +2,7 @@ package com.vktechnologies.democontact.infraestructure.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SoftDelete;
@@ -13,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -36,9 +39,7 @@ public class PersonaModel {
 	@Column(name = "last_name", nullable = false, length = 100)
 	private String lastName;
 
-	@ManyToOne
-	@JoinColumn(name = "gender_id", nullable = false)
-	private GenderModel gender;
+	
 
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
@@ -50,6 +51,18 @@ public class PersonaModel {
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+	
+	@ManyToOne
+	@JoinColumn(name = "gender_id", nullable = false)
+	private GenderModel gender;
+	
+	@ManyToMany
+	@JoinTable(
+		name = "persona_emergency_contacts",
+		joinColumns = @JoinColumn(name = "persona_id"),
+		inverseJoinColumns = @JoinColumn(name = "emergency_contact_persona_id")
+	)
+	private Set<PersonaModel> emergencyContacts;
 
 	// Setters & Getters
 
@@ -72,4 +85,7 @@ public class PersonaModel {
 
 	public LocalDateTime getCreatedAt() { return createdAt; }
 	public LocalDateTime getUpdatedAt() { return updatedAt; }
+	
+	public Set <PersonaModel> getEmergencyContacts() { return this.emergencyContacts; }
+	public void setEmergencyContacts( Set<PersonaModel> emergencyContacts) {this.emergencyContacts = emergencyContacts; }
 }
