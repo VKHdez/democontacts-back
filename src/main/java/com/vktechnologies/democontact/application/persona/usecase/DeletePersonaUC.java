@@ -1,4 +1,4 @@
-package com.vktechnologies.democontact.infraestructure.dto;
+package com.vktechnologies.democontact.application.persona.usecase;
 
 import java.util.Optional;
 

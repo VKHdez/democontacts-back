@@ -2,6 +2,7 @@ package com.vktechnologies.democontact.infraestructure.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,7 +41,6 @@ public class PersonaModel {
 	private String lastName;
 
 	
-
 	@Column(name = "birth_date")
 	private LocalDate birthDate;
 
@@ -62,7 +62,7 @@ public class PersonaModel {
 		joinColumns = @JoinColumn(name = "persona_id"),
 		inverseJoinColumns = @JoinColumn(name = "emergency_contact_persona_id")
 	)
-	private Set<PersonaModel> emergencyContacts;
+	private List<PersonaModel> emergencyContacts;
 
 	// Setters & Getters
 
@@ -86,6 +86,6 @@ public class PersonaModel {
 	public LocalDateTime getCreatedAt() { return createdAt; }
 	public LocalDateTime getUpdatedAt() { return updatedAt; }
 	
-	public Set <PersonaModel> getEmergencyContacts() { return this.emergencyContacts; }
-	public void setEmergencyContacts( Set<PersonaModel> emergencyContacts) {this.emergencyContacts = emergencyContacts; }
+	public List <PersonaModel> getEmergencyContacts() { return this.emergencyContacts; }
+	public void setEmergencyContacts( List<PersonaModel> emergencyContacts) {this.emergencyContacts = emergencyContacts; }
 }
