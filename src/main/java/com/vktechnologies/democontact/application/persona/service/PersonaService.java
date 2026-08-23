@@ -1,5 +1,6 @@
 package com.vktechnologies.democontact.application.persona.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -82,7 +83,65 @@ public class PersonaService {
 	{
 		PersonaModel personaModel = personaRepository.findById(personaId)
 			.orElseThrow(() -> new PersonaNotFoundException( personaId ) );
-	
+
 		personaRepository.delete(personaModel);
+	}
+
+	public PersonaModel activate(Long personaId)
+	{
+		int updated = personaRepository.activateById(personaId);
+
+		if (updated == 0)
+			throw new PersonaNotFoundException(personaId);
+
+		return findPersona(personaId);
+	}
+	
+	/**
+	 * 
+	 * @param personaModel
+	 * @param emergencyContactId
+	 * @return boolean True: if the emergency contact is already assigned, false otherwise
+	 */
+	public boolean emergencyContactIsAssigned(PersonaModel personaModel, PersonaModel emergencyContact)
+	{
+		return personaModel.getEmergencyContacts().contains(emergencyContact);
+	}
+	
+	/**
+	 * 
+	 * @param personaModel
+	 * @param emergencyContact
+	 * @return PersonaModel related contacts updated
+	 */
+	public PersonaModel addEmergencyContact(PersonaModel personaModel, PersonaModel emergencyContact)
+	{
+		if( this.emergencyContactIsAssigned(personaModel, emergencyContact))
+			return personaModel;
+		
+		// Spring 
+		int existsDeletedRecord = personaRepository.existsDeletedEmergencyContact(personaModel.getId(), emergencyContact.getId());
+		if(existsDeletedRecord == 1) {
+			personaRepository.reactivateEmergencyContact(personaModel.getId(), emergencyContact.getId());
+			return this.findPersona(personaModel.getId());
+		}
+		
+		personaModel.getEmergencyContacts().add(emergencyContact);
+		return personaRepository.save(personaModel);
+	}
+	
+	/**
+	 * 
+	 * @param personaModel
+	 * @param emergencyContact
+	 * @return
+	 */
+	public PersonaModel deleteEmergencyContact(PersonaModel personaModel, PersonaModel emergencyContact)
+	{
+		if( !this.emergencyContactIsAssigned(personaModel, emergencyContact))
+			return personaModel;
+		
+		personaModel.getEmergencyContacts().remove(emergencyContact);
+		return personaRepository.save(personaModel);
 	}
 }

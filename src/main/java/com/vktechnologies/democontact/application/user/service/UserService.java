@@ -67,7 +67,12 @@ public class UserService {
 	{
 		UserModel userModel = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException( userId ) );
-		
+
 		userRepository.delete(userModel);
+	}
+
+	public void activateByPersona(Long personaId)
+	{
+		userRepository.activateByPersonaId(personaId);
 	}
 }

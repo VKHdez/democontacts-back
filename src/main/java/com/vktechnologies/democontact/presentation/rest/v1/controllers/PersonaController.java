@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vktechnologies.democontact.application.persona.usecase.ActivatePersonaUC;
+import com.vktechnologies.democontact.application.persona.usecase.AddEmergencyContactUC;
+import com.vktechnologies.democontact.application.persona.usecase.DeleteEmergencyContactUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeletePersonaUC;
 import com.vktechnologies.democontact.application.persona.usecase.GetPersonaUC;
 import com.vktechnologies.democontact.application.persona.usecase.UpdatePersonaUC;
@@ -28,16 +31,26 @@ public class PersonaController {
 	
 	private final UpdatePersonaUC updatePersonaUC;
 	private final DeletePersonaUC deletePersonaUC;
+	private final ActivatePersonaUC activatePersonaUC;
 	private final GetPersonaUC getPersonaUC;
-	
+	// Emergency Contacts
+	private final AddEmergencyContactUC addEmergencyContactUC;
+	private final DeleteEmergencyContactUC deleteEmergencyContactUC;
+
 	public PersonaController(
 		UpdatePersonaUC updatePersonaUC,
 		DeletePersonaUC deletePersonaUC,
-		GetPersonaUC getPersonaUC
+		ActivatePersonaUC activatePersonaUC,
+		GetPersonaUC getPersonaUC,
+		AddEmergencyContactUC addEmergencyContactUC,
+		DeleteEmergencyContactUC deleteEmergencyContactUC
 	) {
 		this.updatePersonaUC = updatePersonaUC;
 		this.deletePersonaUC = deletePersonaUC;
+		this.activatePersonaUC = activatePersonaUC;
 		this.getPersonaUC = getPersonaUC;
+		this.addEmergencyContactUC = addEmergencyContactUC;
+		this.deleteEmergencyContactUC = deleteEmergencyContactUC;
 	}
 	
 	@GetMapping("/{personaId}")
@@ -61,8 +74,7 @@ public class PersonaController {
 		return ResponseEntity.ok(new ApiResponse<>(GetPersonaDTO.from(updatedPersona), "Persona was updated succesfully"));
 	}
 	
-	public void addEmergencyContact()
-	{}
+	
 	
 	@DeleteMapping("/{personaId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
@@ -73,8 +85,38 @@ public class PersonaController {
 		return ResponseEntity.ok(new ApiResponse<>(null, "Persona deleted succesfully"));
 	}
 	
-	public void activate()
+	@PutMapping("/{personaId}/activate")
+	public ResponseEntity<ApiResponse<GetPersonaDTO>> activate(
+		@PathVariable Long personaId
+	)
 	{
-		
+		PersonaModel persona = activatePersonaUC.execute(personaId);
+		return ResponseEntity.ok(new ApiResponse<>(GetPersonaDTO.from(persona), "Persona activated succesfully"));
+	}
+	
+	// EMERGENCY CONTACTS 
+	
+	@PutMapping("/{personaId}/{emergencyContactId}")
+	public ResponseEntity<ApiResponse<PersonaModel>> addEmergencyContact(
+		@PathVariable Long personaId,
+		@PathVariable Long emergencyContactId
+	){
+		PersonaModel persona = this.addEmergencyContactUC.execute(personaId, emergencyContactId);
+		return ResponseEntity.ok(new ApiResponse<>(
+			persona,
+			"Emergency contact associated to persona"
+		));
+	}
+	
+	@DeleteMapping("/{personaId}/{emergencyContactId}")
+	public ResponseEntity<ApiResponse<PersonaModel>> deleteEmergencyContact(
+		@PathVariable Long personaId,
+		@PathVariable Long emergencyContactId
+	){
+		PersonaModel persona = this.deleteEmergencyContactUC.execute(personaId, emergencyContactId);
+		return ResponseEntity.ok( new ApiResponse<>(
+			persona,
+			"Emergency contact removed"
+		));
 	}
 }

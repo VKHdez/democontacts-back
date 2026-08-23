@@ -11,8 +11,8 @@ Fields:
 Rules:
 
 - A user can be related to only one persona.
-- A user cannot exist without a persona, and a persona cannot exist without its related user — deleting either one deletes both.
-- Disabling a user or its related persona disables both, along with all of the persona's related content — addresses and contact numbers.
+- A user cannot exist without a persona. A persona, however, does not require a user — not every persona has an associated user account.
+- Enabling or disabling a user also enables or disables its related persona, along with all of the persona's related content — addresses and contact numbers.
 - The email must be unique.
 
 ## Persona
@@ -29,7 +29,8 @@ Rules:
 
 - A persona can have multiple addresses and numbers.
 - A persona can have multiple other personas (already registered) as emergency contacts.
-- Disabling a persona (or its related user) disables all of its addresses and contact numbers along with it.
+- Enabling or disabling a persona does not require it to have a user — not every persona has one. When the persona does have an associated user, enabling or disabling the persona also enables or disables that user.
+- Enabling or disabling a persona also enables or disables all of its addresses and contact numbers.
 
 ## Address
 
