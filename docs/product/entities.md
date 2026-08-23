@@ -36,18 +36,20 @@ Rules:
 
 Fields:
 
-- associated persona
-- `street`
-- `external number`
-- `interior number`
-- `country`
-- `state`
-- `city`
-- `postal code`
+- associated persona (mandatory) — an address belongs to exactly one persona
+- `street` (optional)
+- `external number` (optional)
+- `interior number` (mandatory)
+- `country` (optional) — free text, not a fixed catalog
+- `state` (optional) — free text, not a fixed catalog
+- `city` (optional)
+- `postal code` (mandatory)
 
 Rules:
 
+- A persona can have multiple addresses; an address belongs to exactly one persona.
 - An address can be normal, billing, or both.
+- A persona can have any number of normal and billing addresses — there is no limit.
 - The postal code must be related to the city, state, and country.
 
 ## Contact Number
