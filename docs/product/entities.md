@@ -38,11 +38,11 @@ Fields:
 
 - associated persona (mandatory) — an address belongs to exactly one persona
 - `street` (optional)
-- `external number` (optional)
-- `interior number` (mandatory)
-- `country` (optional) — free text, not a fixed catalog
-- `state` (optional) — free text, not a fixed catalog
-- `city` (optional)
+- `external number` (mandatory)
+- `interior number` (optional)
+- `country` (mandatory) — free text, not a fixed catalog
+- `state` (mandatory) — free text, not a fixed catalog
+- `city` (mandatory)
 - `postal code` (mandatory)
 
 Rules:
