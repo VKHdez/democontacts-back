@@ -97,4 +97,9 @@ public class AddressService {
 		addressRepository.findByPersonaId(persona.getId())
 			.forEach(addressRepository::delete);
 	}
+
+	public void enableAllByPersona(Long personaId)
+	{
+		addressRepository.activateByPersonaId(personaId);
+	}
 }

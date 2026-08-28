@@ -23,7 +23,7 @@ public class ActivatePersonaUC
 	@Transactional
 	public PersonaModel execute(Long personaId)
 	{
-		PersonaModel persona = personaService.activate(personaId);
+		PersonaModel persona = personaService.activateWithRelatedContent(personaId);
 
 		// A persona is not required to have a user, so this is a no-op when none exists
 		userService.activateByPersona(personaId);

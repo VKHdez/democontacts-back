@@ -126,6 +126,25 @@ public class PersonaService {
 		addressService.disableAllByPersona(persona);
 		disable(personaId);
 	}
+
+	public void activateEmergencyContacts(Long personaId)
+	{
+		personaRepository.activateEmergencyContactsByPersonaId(personaId);
+	}
+
+	/**
+	 * Contraparte de disableWithRelatedContent: reactiva la persona junto con
+	 * sus relaciones de emergency contacts y sus addresses.
+	 */
+	public PersonaModel activateWithRelatedContent(Long personaId)
+	{
+		PersonaModel persona = activate(personaId);
+
+		activateEmergencyContacts(personaId);
+		addressService.enableAllByPersona(personaId);
+
+		return persona;
+	}
 	
 	/**
 	 * 

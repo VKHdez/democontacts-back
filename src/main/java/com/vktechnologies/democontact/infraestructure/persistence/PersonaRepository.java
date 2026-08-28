@@ -55,4 +55,13 @@ public interface PersonaRepository extends JpaRepository<PersonaModel, Long> {
 			OR emergency_contact_persona_id = :personaId
 	""", nativeQuery = true)
 	void disableEmergencyContactsByPersonaId(@Param("personaId") Long personaId);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = """
+		UPDATE persona_emergency_contacts
+		SET deleted = 0
+		WHERE persona_id = :personaId
+			OR emergency_contact_persona_id = :personaId
+	""", nativeQuery = true)
+	void activateEmergencyContactsByPersonaId(@Param("personaId") Long personaId);
 }
