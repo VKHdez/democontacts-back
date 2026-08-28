@@ -48,9 +48,11 @@ Fields:
 Rules:
 
 - A persona can have multiple addresses; an address belongs to exactly one persona.
-- An address can be normal, billing, or both.
+- An address can be normal, billing, or both — it must be at least one of the two, it cannot be neither.
 - A persona can have any number of normal and billing addresses — there is no limit.
 - The postal code must be related to the city, state, and country.
+- An address can be deleted on its own, without deleting the persona it belongs to.
+- An address can only be viewed, edited, or deleted through the persona it belongs to; it is not reachable through a different persona.
 
 ## Contact Number
 

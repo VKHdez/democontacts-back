@@ -11,17 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vktechnologies.democontact.application.persona.usecase.ActivatePersonaUC;
+import com.vktechnologies.democontact.application.persona.usecase.AddAddressUC;
 import com.vktechnologies.democontact.application.persona.usecase.AddEmergencyContactUC;
+import com.vktechnologies.democontact.application.persona.usecase.DeleteAddressUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeleteEmergencyContactUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeletePersonaUC;
 import com.vktechnologies.democontact.application.persona.usecase.GetPersonaUC;
+import com.vktechnologies.democontact.application.persona.usecase.UpdateAddressUC;
 import com.vktechnologies.democontact.application.persona.usecase.UpdatePersonaUC;
 import com.vktechnologies.democontact.infraestructure.api.ApiResponse;
+import com.vktechnologies.democontact.infraestructure.dto.CreateAddressDTO;
 import com.vktechnologies.democontact.infraestructure.dto.CreatePersonaDTO;
+import com.vktechnologies.democontact.infraestructure.dto.GetAddressDTO;
 import com.vktechnologies.democontact.infraestructure.dto.GetFullPersonaDTO;
 import com.vktechnologies.democontact.infraestructure.dto.GetPersonaDTO;
+import com.vktechnologies.democontact.infraestructure.dto.UpdateAddressDTO;
+import com.vktechnologies.democontact.infraestructure.models.AddressModel;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
 import com.vktechnologies.democontact.presentation.rest.ApiPaths;
+
+import jakarta.validation.Valid;
 
 /**
  * @author Ing. Victor Hdez. A <victor.hdezalvarez@gmail.com>
@@ -37,6 +46,10 @@ public class PersonaController {
 	// Emergency Contacts
 	private final AddEmergencyContactUC addEmergencyContactUC;
 	private final DeleteEmergencyContactUC deleteEmergencyContactUC;
+	// Addresses
+	private final AddAddressUC addAddressUC;
+	private final UpdateAddressUC updateAddressUC;
+	private final DeleteAddressUC deleteAddressUC;
 
 	public PersonaController(
 		UpdatePersonaUC updatePersonaUC,
@@ -44,7 +57,10 @@ public class PersonaController {
 		ActivatePersonaUC activatePersonaUC,
 		GetPersonaUC getPersonaUC,
 		AddEmergencyContactUC addEmergencyContactUC,
-		DeleteEmergencyContactUC deleteEmergencyContactUC
+		DeleteEmergencyContactUC deleteEmergencyContactUC,
+		AddAddressUC addAddressUC,
+		UpdateAddressUC updateAddressUC,
+		DeleteAddressUC deleteAddressUC
 	) {
 		this.updatePersonaUC = updatePersonaUC;
 		this.deletePersonaUC = deletePersonaUC;
@@ -52,6 +68,9 @@ public class PersonaController {
 		this.getPersonaUC = getPersonaUC;
 		this.addEmergencyContactUC = addEmergencyContactUC;
 		this.deleteEmergencyContactUC = deleteEmergencyContactUC;
+		this.addAddressUC = addAddressUC;
+		this.updateAddressUC = updateAddressUC;
+		this.deleteAddressUC = deleteAddressUC;
 	}
 	
 	@GetMapping("/{personaId}")
@@ -74,8 +93,6 @@ public class PersonaController {
 		PersonaModel updatedPersona = updatePersonaUC.execute(personaId, updatePersonaDTO);
 		return ResponseEntity.ok(new ApiResponse<>(GetPersonaDTO.from(updatedPersona), "Persona was updated succesfully"));
 	}
-	
-	
 	
 	@DeleteMapping("/{personaId}")
 	public ResponseEntity<ApiResponse<Void>> delete(
@@ -124,10 +141,39 @@ public class PersonaController {
 	// ADDRESSES
 	
 	@PostMapping("/{personaId}/address")
-	public ResponseEntity<ApiResponse<GetFullPersonaDTO>> addAddress(
-		@PathVariable Long personaId
+	public ResponseEntity<ApiResponse<GetAddressDTO>> addAddress(
+		@PathVariable Long personaId,
+		@Valid @RequestBody CreateAddressDTO dto
 	){
-		PersonaModel persona = new PersonaModel();
-		return ResponseEntity.ok( new ApiResponse(GetFullPersonaDTO.from(persona), "Address related to persona") );
+		AddressModel address = this.addAddressUC.execute(personaId, dto);
+		return ResponseEntity.ok( new ApiResponse<>(
+			GetAddressDTO.from(address),
+			"Address related to persona"
+		));
+	}
+
+	@PutMapping("/{personaId}/address/{addressId}")
+	public ResponseEntity<ApiResponse<GetAddressDTO>> updateAddress(
+		@PathVariable Long personaId,
+		@PathVariable Long addressId,
+		@Valid @RequestBody UpdateAddressDTO dto
+	){
+		AddressModel address = this.updateAddressUC.execute(personaId, addressId, dto);
+		return ResponseEntity.ok( new ApiResponse<>(
+			GetAddressDTO.from(address),
+			"Address updated succesfully"
+		));
+	}
+
+	@DeleteMapping("/{personaId}/address/{addressId}")
+	public ResponseEntity<ApiResponse<Void>> deleteAddress(
+		@PathVariable Long personaId,
+		@PathVariable Long addressId
+	){
+		this.deleteAddressUC.execute(personaId, addressId);
+		return ResponseEntity.ok( new ApiResponse<>(
+			null,
+			"Address deleted succesfully"
+		));
 	}
 }

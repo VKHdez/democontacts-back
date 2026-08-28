@@ -32,8 +32,8 @@ public class DeleteUserUC {
 		
 		// Disabling the user first
 		userService.disable(userId);
-		// Disabling the persona
-		personaService.disable(user.getPersona().getId());
+		// Disabling the persona and its related content (emergency contacts, addresses)
+		personaService.disableWithRelatedContent(user.getPersona().getId());
 	}
 	
 	private UserModel getUser(Long userId)

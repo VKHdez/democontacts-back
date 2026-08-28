@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.vktechnologies.democontact.domain.persona.exception.PersonaNotFoundException;
+import com.vktechnologies.democontact.domain.persona.exception.SelfEmergencyContactException;
 import com.vktechnologies.democontact.infraestructure.dto.CreatePersonaDTO;
 import com.vktechnologies.democontact.infraestructure.models.GenderModel;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
@@ -23,22 +24,34 @@ public class PersonaService {
 	private final PersonaRepository personaRepository;
 	private final UserRepository userRepository;
 	private final GenderRepository genderRepository;
+	private final AddressService addressService;
 
 	public PersonaService(
-		PersonaRepository personaRepository, 
+		PersonaRepository personaRepository,
 		UserRepository userRepository,
-		GenderRepository genderRepository
+		GenderRepository genderRepository,
+		AddressService addressService
 	)
 	{
 		this.personaRepository = personaRepository;
 		this.genderRepository = genderRepository;
 		this.userRepository = userRepository;
+		this.addressService = addressService;
 	}
 	
 	public PersonaModel findPersona(Long personaId)
 	{
 		return personaRepository.findById(personaId)
 				.orElseThrow(() -> new PersonaNotFoundException( personaId ) );
+	}
+
+	/**
+	 * NOTA: no valida que la persona exista, retorna un proxy de referencia (getReferenceById).
+	 * Si el personaId no existe, el error se manifestará hasta el flush/commit (FK violation).
+	 */
+	public PersonaModel getReference(Long personaId)
+	{
+		return personaRepository.getReferenceById(personaId);
 	}
 
 	public PersonaModel create(CreatePersonaDTO dto)
@@ -83,7 +96,6 @@ public class PersonaService {
 	{
 		PersonaModel personaModel = personaRepository.findById(personaId)
 			.orElseThrow(() -> new PersonaNotFoundException( personaId ) );
-
 		personaRepository.delete(personaModel);
 	}
 
@@ -95,6 +107,24 @@ public class PersonaService {
 			throw new PersonaNotFoundException(personaId);
 
 		return findPersona(personaId);
+	}
+
+	public void disableEmergencyContacts(Long personaId)
+	{
+		personaRepository.disableEmergencyContactsByPersonaId(personaId);
+	}
+
+	/**
+	 * Deshabilita la persona junto con todo su contenido relacionado:
+	 * sus relaciones de emergency contacts (como duena o como contacto de alguien mas) y sus addresses.
+	 */
+	public void disableWithRelatedContent(Long personaId)
+	{
+		PersonaModel persona = findPersona(personaId);
+
+		disableEmergencyContacts(personaId);
+		addressService.disableAllByPersona(persona);
+		disable(personaId);
 	}
 	
 	/**
@@ -116,6 +146,9 @@ public class PersonaService {
 	 */
 	public PersonaModel addEmergencyContact(PersonaModel personaModel, PersonaModel emergencyContact)
 	{
+		if( personaModel.getId().equals(emergencyContact.getId()))
+			throw new SelfEmergencyContactException(personaModel.getId());
+
 		if( this.emergencyContactIsAssigned(personaModel, emergencyContact))
 			return personaModel;
 		

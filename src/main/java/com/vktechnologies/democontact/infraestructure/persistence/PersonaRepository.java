@@ -43,7 +43,16 @@ public interface PersonaRepository extends JpaRepository<PersonaModel, Long> {
 			AND emergency_contact_persona_id = :emergencyContactId
 	""", nativeQuery = true)
 	void reactivateEmergencyContact(
-		@Param("personaId") Long personaId, 
+		@Param("personaId") Long personaId,
 		@Param("emergencyContactId") Long emergencyContactId
 	);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = """
+		UPDATE persona_emergency_contacts
+		SET deleted = 1
+		WHERE persona_id = :personaId
+			OR emergency_contact_persona_id = :personaId
+	""", nativeQuery = true)
+	void disableEmergencyContactsByPersonaId(@Param("personaId") Long personaId);
 }

@@ -13,7 +13,8 @@ public record GetFullPersonaDTO(
 	String lastName,
 	LocalDate birthDate,
 	GetGenderDTO gender,
-	List<GetPersonaDTO> emergencyContacts
+	List<GetPersonaDTO> emergencyContacts,
+	List<GetAddressDTO> addresses
 ) {
 	public static GetFullPersonaDTO from(PersonaModel persona)
 	{
@@ -26,6 +27,9 @@ public record GetFullPersonaDTO(
 			GetGenderDTO.from(persona.getGender()),
 			persona.getEmergencyContacts().stream()
 				.map(GetPersonaDTO::from)
+				.toList(),
+			persona.getAddresses().stream()
+				.map(GetAddressDTO::from)
 				.toList()
 		);
 	}

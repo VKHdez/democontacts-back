@@ -5,28 +5,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.vktechnologies.democontact.application.persona.service.AddressService;
 import com.vktechnologies.democontact.application.persona.service.PersonaService;
-import com.vktechnologies.democontact.infraestructure.dto.CreateAddressDTO;
 import com.vktechnologies.democontact.infraestructure.models.AddressModel;
 import com.vktechnologies.democontact.infraestructure.models.PersonaModel;
 
 @Component
-public class AddAddressUC
+public class DeleteAddressUC
 {
 	private final PersonaService personaService;
 	private final AddressService addressService;
 
-	public AddAddressUC(PersonaService personaService, AddressService addressService)
+	public DeleteAddressUC(PersonaService personaService, AddressService addressService)
 	{
 		this.personaService = personaService;
 		this.addressService = addressService;
 	}
 
 	@Transactional
-	public AddressModel execute(Long personaId, CreateAddressDTO dto)
+	public void execute(Long personaId, Long addressId)
 	{
-		// NOTA: no se valida aqui que personaId exista (se usa getReference, no findPersona).
-		PersonaModel persona = personaService.getReference(personaId);
-		return addressService.create(dto, persona);
-	}
+		PersonaModel persona = personaService.findPersona(personaId);
+		AddressModel address = addressService.findAddress(addressId);
+		addressService.validateBelongsToPersona(address, persona);
 
+		addressService.delete(address);
+	}
 }

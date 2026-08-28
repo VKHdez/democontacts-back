@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -64,6 +65,9 @@ public class PersonaModel {
 	)
 	private List<PersonaModel> emergencyContacts;
 
+	@OneToMany(mappedBy = "persona")
+	private List<AddressModel> addresses;
+
 	// Setters & Getters
 
 	public Long getId() { return id; }
@@ -88,4 +92,6 @@ public class PersonaModel {
 	
 	public List <PersonaModel> getEmergencyContacts() { return this.emergencyContacts; }
 	public void setEmergencyContacts( List<PersonaModel> emergencyContacts) {this.emergencyContacts = emergencyContacts; }
+
+	public List<AddressModel> getAddresses() { return this.addresses; }
 }
