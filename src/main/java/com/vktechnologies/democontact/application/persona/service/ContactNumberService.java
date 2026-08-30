@@ -79,21 +79,8 @@ public class ContactNumberService {
 		return contactNumberRepository.save(contactNumber);
 	}
 
-	/**
-	 * Reconcilia phoneNumberTypes de un contact number YA EXISTENTE contra la lista deseada,
-	 * enteramente via SQL nativo sobre contact_number_phone_types -- NUNCA mutando la
-	 * coleccion @ManyToMany en Java. Esa coleccion es un List (PersistentBag) sin
-	 * @OrderColumn: Hibernate no sabe diffear un bag elemento por elemento, asi que
-	 * CUALQUIER mutacion (clear(), removeIf(), addAll()) hace que recree la coleccion
-	 * COMPLETA en el flush (soft-borra todas las filas actuales y reinserta todas las
-	 * finales), y como el join table es @SoftDelete esa reinsercion choca con la fila
-	 * que sigue existiendo fisicamente (ahora deleted=1) -- PK violation, sin importar
-	 * que tan bien se filtre la lista en Java. Por eso las 3 operaciones (reactivar lo
-	 * soft-borrado que se sigue queriendo, soft-borrar lo que ya no se quiere, insertar
-	 * los pares que nunca existieron) se hacen directas en SQL Server. Reusado por
-	 * reactivate() y update(); el caller sigue siendo responsable del save() final
-	 * (que aqui ya no toca esta relacion, solo columnas escalares).
-	 */
+	// Reconcilia phoneNumberTypes via SQL nativo, nunca tocando la coleccion @ManyToMany en Java
+	// (es un Bag: cualquier mutacion la recrea completa y choca con el soft-delete). Usado por reactivate() y update().
 	private ContactNumberModel reconcilePhoneNumberTypes(Long contactNumberId, List<Long> phoneNumberTypeIds)
 	{
 		logger.info("--- [reconcilePhoneNumberTypes] incoming phoneNumberTypeIds: "+phoneNumberTypeIds+" ----");
@@ -118,34 +105,24 @@ public class ContactNumberService {
 	}
 
 
-	/**
-	 * NOTA: siempre retorna una lista MUTABLE (ArrayList), nunca List.of()/Stream.toList().
-	 * Hibernate necesita poder hacer .clear() sobre esta coleccion al reconciliar el
-	 * @ManyToMany durante un merge (update de una entidad ya existente) -- una lista
-	 * inmutable revienta con UnsupportedOperationException en ese flujo.
-	 */
+	// Siempre retorna ArrayList mutable, nunca List.of()/toList() -- Hibernate necesita clear() sobre esto en el merge del @ManyToMany.
 	private List<PhoneNumberTypeModel> resolvePhoneNumberTypes(List<Long> phoneNumberTypeIds)
 	{
-		// If Phone Number Types is empty, set NO TYPE as default type 
 		if (phoneNumberTypeIds.isEmpty()){
 			List<PhoneNumberTypeModel> noType = new ArrayList<>();
 			noType.add(findNoTypePhoneNumberType());
 			return noType;
 		}
 
-		// Otherwise find all the objects related to the inputs
 		return phoneNumberTypeIds.stream()
 				.map(
 					phoneNumberTypeId -> phoneNumberTypeRepository.findById(phoneNumberTypeId)
 						.orElseThrow(() -> new PhoneNumberTypeNotFoundException(phoneNumberTypeId))
 				)
-				.collect(Collectors.toCollection(ArrayList::new)); // Get the result as List<PhoneNumberTypeModel>
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
-	/**
-	 * NOTA: "SIN TIPO" es un valor de catalogo sembrado (V19); si falta en la DB
-	 * es un problema de datos/migracion, no un caso de usuario invalido.
-	 */
+	// "SIN TIPO" es un valor de catalogo sembrado (V19); si falta en la DB es un problema de datos, no de usuario.
 	private PhoneNumberTypeModel findNoTypePhoneNumberType()
 	{
 		return phoneNumberTypeRepository.findByName(NO_TYPE_NAME)
@@ -170,7 +147,6 @@ public class ContactNumberService {
 			? reconcilePhoneNumberTypes(oldContactNumber.getId(), dto.phoneNumberTypeIds())
 			: oldContactNumber;
 
-		// If there's any Country code sended
 		if (dto.countryCodeId() != null){
 			CountryCodeModel countryCode = countryCodeRepository.findById(dto.countryCodeId())
 					.orElseThrow(() -> new CountryCodeNotFoundException(dto.countryCodeId()));

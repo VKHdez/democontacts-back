@@ -14,9 +14,7 @@ public interface ContactNumberRepository extends JpaRepository<ContactNumberMode
 
 	Optional<ContactNumberModel> findByCountryCodeIdAndNumber(Long countryCodeId, String number);
 
-	/**
-	 * This functions validates if there exists a current soft-deleted register in DB
-	 */
+	// Valida si existe un registro soft-borrado
 	@Query(value = """
 		SELECT CASE WHEN EXISTS (
 			SELECT 1 FROM contact_numbers
@@ -43,12 +41,7 @@ public interface ContactNumberRepository extends JpaRepository<ContactNumberMode
 		@Param("personaId") Long personaId
 	);
 
-	/**
-	 * Reactiva de una sola pasada, via IN, cualquier vinculo numero<->tipo que ya
-	 * existiera soft-borrado en contact_number_phone_types -- evita que Hibernate
-	 * intente un INSERT duplicado sobre esa PK compuesta. Un id que no tenga vinculo
-	 * soft-borrado simplemente no matchea ninguna fila (no-op para ese id).
-	 */
+	// Reactiva los vinculos numero<->tipo que esten soft-borrados y sigan siendo requeridos
 	@Modifying(clearAutomatically = true)
 	@Query(value = """
 		UPDATE contact_number_phone_types
@@ -62,9 +55,7 @@ public interface ContactNumberRepository extends JpaRepository<ContactNumberMode
 		@Param("phoneNumberTypeIds") List<Long> phoneNumberTypeIds
 	);
 
-	/**
-	 * Soft-borra cualquier vinculo activo que ya NO este en la lista deseada.
-	 */
+	// Soft-borra los vinculos activos que ya no esten en la lista deseada
 	@Modifying(clearAutomatically = true)
 	@Query(value = """
 		UPDATE contact_number_phone_types
@@ -78,11 +69,7 @@ public interface ContactNumberRepository extends JpaRepository<ContactNumberMode
 		@Param("phoneNumberTypeIds") List<Long> phoneNumberTypeIds
 	);
 
-	/**
-	 * Inserta unicamente los pares numero<->tipo que no tienen NINGUNA fila todavia
-	 * (ni activa ni soft-borrada) -- los que ya existen soft-borrados los maneja
-	 * reactivatePhoneTypes, nunca ambos a la vez para el mismo par.
-	 */
+	// Inserta los pares numero<->tipo que no tienen ninguna fila todavia (ni activa ni borrada)
 	@Modifying(clearAutomatically = true)
 	@Query(value = """
 		INSERT INTO contact_number_phone_types (contact_number_id, phone_number_type_id, deleted)
