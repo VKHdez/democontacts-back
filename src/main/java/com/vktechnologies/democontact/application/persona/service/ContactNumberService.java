@@ -146,6 +146,16 @@ public class ContactNumberService {
 		contactNumberRepository.delete(contactNumber);
 	}
 
+	public void disableAllByPersona(PersonaModel persona)
+	{
+		contactNumberRepository.deactivateByPersonaId(persona.getId());
+	}
+
+	public void enableAllByPersona(Long personaId)
+	{
+		contactNumberRepository.activateByPersonaId(personaId);
+	}
+
 	public ContactNumberModel update(ContactNumberModel oldContactNumber, UpdateContactNumberDTO dto)
 	{
 		ContactNumberModel contactNumber = dto.phoneNumberTypeIds() != null

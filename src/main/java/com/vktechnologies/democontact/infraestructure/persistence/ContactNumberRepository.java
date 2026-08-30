@@ -86,4 +86,20 @@ public interface ContactNumberRepository extends JpaRepository<ContactNumberMode
 		@Param("contactNumberId") Long contactNumberId,
 		@Param("phoneNumberTypeIds") List<Long> phoneNumberTypeIds
 	);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = """
+		UPDATE contact_numbers
+		SET deleted = 1
+		WHERE persona_id = :personaId
+	""", nativeQuery = true)
+	void deactivateByPersonaId(@Param("personaId") Long personaId);
+
+	@Modifying(clearAutomatically = true)
+	@Query(value = """
+		UPDATE contact_numbers
+		SET deleted = 0
+		WHERE persona_id = :personaId
+	""", nativeQuery = true)
+	void activateByPersonaId(@Param("personaId") Long personaId);
 }

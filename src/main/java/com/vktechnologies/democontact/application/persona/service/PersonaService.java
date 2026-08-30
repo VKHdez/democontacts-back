@@ -25,18 +25,21 @@ public class PersonaService {
 	private final UserRepository userRepository;
 	private final GenderRepository genderRepository;
 	private final AddressService addressService;
+	private final ContactNumberService contactNumberService;
 
 	public PersonaService(
 		PersonaRepository personaRepository,
 		UserRepository userRepository,
 		GenderRepository genderRepository,
-		AddressService addressService
+		AddressService addressService,
+		ContactNumberService contactNumberService
 	)
 	{
 		this.personaRepository = personaRepository;
 		this.genderRepository = genderRepository;
 		this.userRepository = userRepository;
 		this.addressService = addressService;
+		this.contactNumberService = contactNumberService;
 	}
 	
 	public PersonaModel findPersona(Long personaId)
@@ -114,16 +117,14 @@ public class PersonaService {
 		personaRepository.disableEmergencyContactsByPersonaId(personaId);
 	}
 
-	/**
-	 * Deshabilita la persona junto con todo su contenido relacionado:
-	 * sus relaciones de emergency contacts (como duena o como contacto de alguien mas) y sus addresses.
-	 */
+	// Deshabilita la persona junto con emergency contacts, addresses y contact numbers
 	public void disableWithRelatedContent(Long personaId)
 	{
 		PersonaModel persona = findPersona(personaId);
 
 		disableEmergencyContacts(personaId);
 		addressService.disableAllByPersona(persona);
+		contactNumberService.disableAllByPersona(persona);
 		disable(personaId);
 	}
 
@@ -132,16 +133,14 @@ public class PersonaService {
 		personaRepository.activateEmergencyContactsByPersonaId(personaId);
 	}
 
-	/**
-	 * Contraparte de disableWithRelatedContent: reactiva la persona junto con
-	 * sus relaciones de emergency contacts y sus addresses.
-	 */
+	// Contraparte de disableWithRelatedContent: reactiva persona, emergency contacts, addresses y contact numbers
 	public PersonaModel activateWithRelatedContent(Long personaId)
 	{
 		PersonaModel persona = activate(personaId);
 
 		activateEmergencyContacts(personaId);
 		addressService.enableAllByPersona(personaId);
+		contactNumberService.enableAllByPersona(personaId);
 
 		return persona;
 	}
