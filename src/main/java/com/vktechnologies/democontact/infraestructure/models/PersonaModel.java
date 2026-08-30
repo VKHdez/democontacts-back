@@ -68,6 +68,9 @@ public class PersonaModel {
 	@OneToMany(mappedBy = "persona")
 	private List<AddressModel> addresses;
 
+	@OneToMany(mappedBy = "persona")
+	private List<ContactNumberModel> contactNumbers;
+
 	// Setters & Getters
 
 	public Long getId() { return id; }
@@ -94,4 +97,6 @@ public class PersonaModel {
 	public void setEmergencyContacts( List<PersonaModel> emergencyContacts) {this.emergencyContacts = emergencyContacts; }
 
 	public List<AddressModel> getAddresses() { return this.addresses; }
+
+	public List<ContactNumberModel> getContactNumbers() { return this.contactNumbers; }
 }

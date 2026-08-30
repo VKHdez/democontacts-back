@@ -94,8 +94,7 @@ public class AddressService {
 
 	public void disableAllByPersona(PersonaModel persona)
 	{
-		addressRepository.findByPersonaId(persona.getId())
-			.forEach(addressRepository::delete);
+		addressRepository.deactivateByPersonaId(persona.getId());
 	}
 
 	public void enableAllByPersona(Long personaId)
