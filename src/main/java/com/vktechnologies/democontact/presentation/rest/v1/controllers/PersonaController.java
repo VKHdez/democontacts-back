@@ -17,6 +17,7 @@ import com.vktechnologies.democontact.application.persona.usecase.AddAddressUC;
 import com.vktechnologies.democontact.application.persona.usecase.AddContactNumberUC;
 import com.vktechnologies.democontact.application.persona.usecase.AddEmergencyContactUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeleteAddressUC;
+import com.vktechnologies.democontact.application.persona.usecase.DeleteContactNumberUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeleteEmergencyContactUC;
 import com.vktechnologies.democontact.application.persona.usecase.DeletePersonaUC;
 import com.vktechnologies.democontact.application.persona.usecase.GetPersonaUC;
@@ -63,6 +64,7 @@ public class PersonaController {
 	// Contact Numbers
 	private final AddContactNumberUC addContactNumberUC;
 	private final UpdateContactNumberUC updateContactNumberUC;
+	private final DeleteContactNumberUC deleteContactNumberUC;
 
 	public PersonaController(
 		UpdatePersonaUC updatePersonaUC,
@@ -75,7 +77,8 @@ public class PersonaController {
 		UpdateAddressUC updateAddressUC,
 		DeleteAddressUC deleteAddressUC,
 		AddContactNumberUC addContactNumberUC,
-		UpdateContactNumberUC updateContactNumberUC
+		UpdateContactNumberUC updateContactNumberUC,
+		DeleteContactNumberUC deleteContactNumberUC
 	) {
 		this.updatePersonaUC = updatePersonaUC;
 		this.deletePersonaUC = deletePersonaUC;
@@ -88,6 +91,7 @@ public class PersonaController {
 		this.deleteAddressUC = deleteAddressUC;
 		this.addContactNumberUC = addContactNumberUC;
 		this.updateContactNumberUC = updateContactNumberUC;
+		this.deleteContactNumberUC = deleteContactNumberUC;
 	}
 	
 	@GetMapping("/{personaId}")
@@ -223,6 +227,18 @@ public class PersonaController {
 		return ResponseEntity.ok( new ApiResponse<>(
 			GetContactNumberDTO.from(contactNumber),
 			"Contact number updated succesfully"
+		));
+	}
+
+	@DeleteMapping("/{personaId}/contact-number/{contactNumberId}")
+	public ResponseEntity<ApiResponse<Void>> deleteContactNumber(
+		@PathVariable Long personaId,
+		@PathVariable Long contactNumberId
+	){
+		this.deleteContactNumberUC.execute(personaId, contactNumberId);
+		return ResponseEntity.ok( new ApiResponse<>(
+			null,
+			"Contact number deleted succesfully"
 		));
 	}
 }

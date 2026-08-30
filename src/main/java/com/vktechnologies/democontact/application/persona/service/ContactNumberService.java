@@ -141,6 +141,11 @@ public class ContactNumberService {
 			throw new ContactNumberNotFoundException(contactNumber.getId(), persona.getId());
 	}
 
+	public void disable(ContactNumberModel contactNumber)
+	{
+		contactNumberRepository.delete(contactNumber);
+	}
+
 	public ContactNumberModel update(ContactNumberModel oldContactNumber, UpdateContactNumberDTO dto)
 	{
 		ContactNumberModel contactNumber = dto.phoneNumberTypeIds() != null
